@@ -1,69 +1,88 @@
-/* Variabili di colore */
+/* ===== Colori: tema chiaro (predefinito) ===== */
 :root {
+  color-scheme: light;
   --sfondo: #f1f3f8; --testo: #1f2937; --tenue: #6b7280; --bordo: #dfe3ee;
-  --primario: #4f46e5; --primario-scuro: #4338ca; --errore: #dc2626;
+  --superficie: #fff; --superficie-2: #f3f4f8; --superficie-hover: #e6e9f2;
+  --campo: #fff; --colonna: #e7eaf3; --traccia: #e3e6f0; --tratteggio: #c9cfde; --drop: #d8dcef;
+  --primario: #4f46e5; --primario-scuro: #4338ca; --titolo: #4f46e5; --errore: #dc2626;
+  --ombra: rgba(15, 23, 42, .1); --ombra-forte: rgba(15, 23, 42, .3); --velo: rgba(15, 23, 42, .5);
   --da-fare: #f59e0b; --in-corso: #3b82f6; --completato: #10b981;
   --alta: #ef4444; --media: #f59e0b; --bassa: #10b981;
 }
 
-/* Base */
+/* ===== Colori: tema scuro (attivato da tema.js con data-tema="scuro") ===== */
+:root[data-tema="scuro"] {
+  color-scheme: dark;
+  --sfondo: #0f1220; --testo: #e5e7eb; --tenue: #9ca3af; --bordo: #2a2f45;
+  --superficie: #1a1d2e; --superficie-2: #242843; --superficie-hover: #2e3354;
+  --campo: #12152a; --colonna: #151828; --traccia: #2a2f45; --tratteggio: #3a4060; --drop: #1f2440;
+  --primario: #6366f1; --primario-scuro: #4f46e5; --titolo: #a5b4fc; --errore: #f87171;
+  --ombra: rgba(0, 0, 0, .45); --ombra-forte: rgba(0, 0, 0, .7); --velo: rgba(0, 0, 0, .65);
+}
+
+/* ===== Base ===== */
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--sfondo); color: var(--testo); }
 label { display: block; font-size: .85rem; font-weight: 600; margin: .8rem 0 .3rem; }
-input, select, textarea { width: 100%; padding: .55rem .7rem; font: inherit; color: var(--testo); background: #fff; border: 1px solid var(--bordo); border-radius: 8px; }
+input, select, textarea { width: 100%; padding: .55rem .7rem; font: inherit; color: var(--testo); background: var(--campo); border: 1px solid var(--bordo); border-radius: 8px; }
+input::placeholder, textarea::placeholder { color: var(--tenue); }
 input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible { outline: 2px solid var(--primario); outline-offset: 2px; }
 .errore { color: var(--errore); font-size: .85rem; margin: .6rem 0 0; }
 
-/* Pulsanti */
+/* ===== Selettore del tema (inserito da tema.js) ===== */
+.selettore-tema { width: auto; padding: .4rem .6rem; font-size: .85rem; cursor: pointer; }
+.selettore-fisso { position: fixed; top: 1rem; right: 1rem; z-index: 20; }
+
+/* ===== Pulsanti ===== */
 .btn { display: inline-block; padding: .55rem 1rem; font: inherit; font-weight: 600; text-decoration: none; border: 1px solid transparent; border-radius: 8px; cursor: pointer; }
 .btn-primario { background: var(--primario); color: #fff; }
 .btn-primario:hover { background: var(--primario-scuro); }
-.btn-secondario { background: #fff; color: var(--testo); border-color: var(--bordo); }
-.btn-secondario:hover { background: #f3f4f8; }
-.btn-icona, .btn-testo { font: inherit; font-size: .8rem; padding: .3rem .6rem; color: var(--testo); background: #f3f4f8; border: 1px solid var(--bordo); border-radius: 6px; cursor: pointer; }
-.btn-icona:hover:not(:disabled), .btn-testo:hover { background: #e6e9f2; }
+.btn-secondario { background: var(--superficie); color: var(--testo); border-color: var(--bordo); }
+.btn-secondario:hover { background: var(--superficie-2); }
+.btn-icona, .btn-testo { font: inherit; font-size: .8rem; padding: .3rem .6rem; color: var(--testo); background: var(--superficie-2); border: 1px solid var(--bordo); border-radius: 6px; cursor: pointer; }
+.btn-icona:hover:not(:disabled), .btn-testo:hover { background: var(--superficie-hover); }
 .btn-icona:disabled { opacity: .35; cursor: not-allowed; }
 .btn-elimina { color: var(--errore); }
 
-/* Barra superiore (fissa nella board, così "Torna ai Progetti" si vede sempre) */
-.topbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .8rem 1.5rem; background: #fff; border-bottom: 1px solid var(--bordo); }
+/* ===== Barra superiore ===== */
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .8rem 1.5rem; background: var(--superficie); border-bottom: 1px solid var(--bordo); }
 .topbar-fissa { position: sticky; top: 0; z-index: 10; }
-.topbar h1 { margin: 0; font-size: 1.2rem; color: var(--primario); overflow-wrap: anywhere; }
+.topbar h1 { margin: 0; font-size: 1.2rem; color: var(--titolo); overflow-wrap: anywhere; }
 .utente { display: flex; align-items: center; gap: .8rem; }
 .contenitore { max-width: 1200px; margin: 0 auto; padding: 1.5rem; }
 
-/* Barra di progresso (usata in dashboard e nella board) */
-.barra { height: 12px; background: #e3e6f0; border-radius: 999px; overflow: hidden; }
+/* ===== Barra di progresso ===== */
+.barra { height: 12px; background: var(--traccia); border-radius: 999px; overflow: hidden; }
 .barra-riempita { width: 0; height: 100%; background: var(--completato); border-radius: 999px; transition: width .35s ease; }
 .progetto-info { margin: .5rem 0 0; font-size: .85rem; color: var(--tenue); }
 
-/* Dashboard progetti */
+/* ===== Dashboard progetti ===== */
 .nuovo-progetto { display: flex; gap: .8rem; margin-bottom: 1.5rem; }
 .elenco-progetti { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
-.progetto { padding: 1.1rem; background: #fff; border-radius: 12px; box-shadow: 0 1px 3px rgba(15, 23, 42, .1); }
+.progetto { padding: 1.1rem; background: var(--superficie); border-radius: 12px; box-shadow: 0 1px 3px var(--ombra); }
 .progetto-link { color: inherit; text-decoration: none; }
 .progetto-titolo { margin: 0 0 .8rem; overflow-wrap: anywhere; }
 .progetto .azioni { margin-top: 1rem; }
 .vuoto { color: var(--tenue); }
 
-/* Board */
+/* ===== Board ===== */
 .avanzamento { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: .3rem 1rem; margin-bottom: 1.5rem; }
 .avanzamento .barra { grid-column: 1 / -1; }
 .avanzamento .progetto-info { margin: 0; }
 .board { display: grid; grid-template-columns: repeat(3, minmax(260px, 1fr)); gap: 1rem; overflow-x: auto; padding-bottom: .5rem; }
-.colonna-box { display: flex; flex-direction: column; min-height: 60vh; padding: .9rem; background: #e7eaf3; border-radius: 12px; border-top: 4px solid var(--colore); transition: background .15s; }
+.colonna-box { display: flex; flex-direction: column; min-height: 60vh; padding: .9rem; background: var(--colonna); border-radius: 12px; border-top: 4px solid var(--colore); transition: background .15s; }
 .colonna-box[data-stato="da-fare"] { --colore: var(--da-fare); }
 .colonna-box[data-stato="in-corso"] { --colore: var(--in-corso); }
 .colonna-box[data-stato="completato"] { --colore: var(--completato); }
-.colonna-box.drop-attivo { background: #d8dcef; outline: 2px dashed var(--colore); outline-offset: -4px; }
+.colonna-box.drop-attivo { background: var(--drop); outline: 2px dashed var(--colore); outline-offset: -4px; }
 .colonna-box h2 { display: flex; align-items: center; justify-content: space-between; margin: 0 0 .8rem; font-size: 1rem; }
 .contatore { min-width: 1.6rem; padding: .1rem .5rem; text-align: center; font-size: .8rem; color: #fff; background: var(--colore); border-radius: 999px; }
 .colonna { display: flex; flex-direction: column; gap: .7rem; flex: 1; }
-.colonna:empty::before { content: "Trascina qui un'attività"; padding: 1.5rem 0; text-align: center; font-size: .9rem; color: var(--tenue); border: 2px dashed #c9cfde; border-radius: 10px; }
+.colonna:empty::before { content: "Trascina qui un'attività"; padding: 1.5rem 0; text-align: center; font-size: .9rem; color: var(--tenue); border: 2px dashed var(--tratteggio); border-radius: 10px; }
 
-/* Schede */
-.scheda { padding: .8rem .9rem; background: #fff; border-left: 4px solid var(--bordo); border-radius: 10px; box-shadow: 0 1px 3px rgba(15, 23, 42, .1); cursor: grab; }
+/* ===== Schede ===== */
+.scheda { padding: .8rem .9rem; background: var(--superficie); border-left: 4px solid var(--bordo); border-radius: 10px; box-shadow: 0 1px 3px var(--ombra); cursor: grab; }
 .scheda.in-trascinamento { opacity: .4; }
 .scheda.priorita-alta { border-left-color: var(--alta); }
 .scheda.priorita-media { border-left-color: var(--media); }
@@ -78,23 +97,23 @@ input:focus, select:focus, textarea:focus, button:focus-visible, a:focus-visible
 .azioni { display: flex; align-items: center; gap: .4rem; }
 .btn-modifica { margin-left: auto; }
 
-/* Finestra di dialogo */
-dialog { width: min(460px, 92vw); padding: 1.5rem; color: var(--testo); border: none; border-radius: 14px; box-shadow: 0 20px 50px rgba(15, 23, 42, .3); }
-dialog::backdrop { background: rgba(15, 23, 42, .5); }
+/* ===== Finestra di dialogo ===== */
+dialog { width: min(460px, 92vw); padding: 1.5rem; color: var(--testo); background: var(--superficie); border: none; border-radius: 14px; box-shadow: 0 20px 50px var(--ombra-forte); }
+dialog::backdrop { background: var(--velo); }
 dialog h2 { margin: 0 0 .5rem; }
 dialog textarea { resize: vertical; }
 .riga { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
 .azioni-form { display: flex; justify-content: flex-end; gap: .6rem; margin-top: 1.2rem; }
 
-/* Login */
+/* ===== Login ===== */
 .pagina-login { display: grid; place-items: center; min-height: 100vh; padding: 1rem; }
-.login-box { width: min(380px, 100%); padding: 2rem; background: #fff; border-radius: 14px; box-shadow: 0 10px 30px rgba(15, 23, 42, .12); }
-.login-box h1 { margin: 0; text-align: center; color: var(--primario); }
+.login-box { width: min(380px, 100%); padding: 2rem; background: var(--superficie); border-radius: 14px; box-shadow: 0 10px 30px var(--ombra); }
+.login-box h1 { margin: 0; text-align: center; color: var(--titolo); }
 .login-box .btn { width: 100%; margin-top: 1.2rem; }
 .sottotitolo { margin: .3rem 0 1rem; text-align: center; color: var(--tenue); }
 .nota { margin: 1rem 0 0; text-align: center; font-size: .8rem; color: var(--tenue); }
 
-/* Schermi stretti */
+/* ===== Schermi stretti ===== */
 @media (max-width: 800px) {
   .board { grid-template-columns: 1fr; overflow-x: visible; }
   .colonna-box { min-height: 0; }

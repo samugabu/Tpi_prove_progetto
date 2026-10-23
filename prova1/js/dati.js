@@ -4,8 +4,11 @@ const CHIAVE_VECCHIA = "kanban_attivita";
 const STATI = ["da-fare", "in-corso", "completato"];
 
 const UTENTI = [
-  { username: "admin", password: "1234" },
-  { username: "utente", password: "kanban" }
+  { username: "gabu", password: "1234" },
+  { username: "kevin", password: "1234" },
+  { username: "topala", password: "1234" },
+  { username: "sora", password: "1234" },
+    { username: "profe", password: "1234" }
 ];
 
 const Dati = (function () {
@@ -45,7 +48,6 @@ const Dati = (function () {
   }
 
   return {
-    /* ---- Sessione ---- */
     utente: () => Archivio.leggi(CHIAVE_UTENTE),
 
     accedi(username, password) {
