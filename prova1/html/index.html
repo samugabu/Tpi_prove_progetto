@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kanban Board</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/storage.js" defer></script>
+  <script src="../js/script.js" defer></script>
+</head>
+<body>
+
+  <header class="topbar">
+    <h1>Kanban Board</h1>
+    <div class="utente">
+      <span>Ciao, <strong id="utente-corrente"></strong></span>
+      <button type="button" id="btn-logout" class="btn btn-secondario">Esci</button>
+    </div>
+  </header>
+
+  <main class="contenitore">
+    <section class="toolbar" aria-label="Filtri e azioni">
+      <form id="form-filtri" class="filtri">
+        <label>Priorità
+          <select id="filtro-priorita" name="filtro-priorita">
+            <option value="tutte" selected>Tutte</option>
+            <option value="bassa">Bassa</option>
+            <option value="media">Media</option>
+            <option value="alta">Alta</option>
+          </select>
+        </label>
+
+        <label>Assegnatario
+          <input type="search" id="filtro-assegnatario" name="filtro-assegnatario" placeholder="Tutti" autocomplete="off">
+        </label>
+
+        <button type="reset" id="btn-reset-filtri" class="btn btn-secondario">Azzera filtri</button>
+      </form>
+
+      <button type="button" id="btn-nuova" class="btn btn-primario">+ Nuova attività</button>
+    </section>
+
+    <section id="board" class="board" aria-label="Board">
+
+      <section class="colonna-box" data-stato="da-fare">
+        <h2>Da fare <span class="contatore" id="conteggio-da-fare">0</span></h2>
+        <div class="colonna" id="colonna-da-fare"></div>
+        <button type="button" class="btn-aggiungi" data-stato="da-fare">+ Aggiungi attività</button>
+      </section>
+
+      <section class="colonna-box" data-stato="in-corso">
+        <h2>In corso <span class="contatore" id="conteggio-in-corso">0</span></h2>
+        <div class="colonna" id="colonna-in-corso"></div>
+        <button type="button" class="btn-aggiungi" data-stato="in-corso">+ Aggiungi attività</button>
+      </section>
+
+      <section class="colonna-box" data-stato="completato">
+        <h2>Completato <span class="contatore" id="conteggio-completato">0</span></h2>
+        <div class="colonna" id="colonna-completato"></div>
+        <button type="button" class="btn-aggiungi" data-stato="completato">+ Aggiungi attività</button>
+      </section>
+
+    </section>
+  </main>
+
+  <dialog id="dialog-attivita">
+    <form id="form-attivita" novalidate>
+      <h2 id="dialog-titolo">Nuova attività</h2>
+
+      <input type="hidden" id="att-id" name="id">
+
+      <label for="att-titolo">Titolo *</label>
+      <input type="text" id="att-titolo" name="titolo" required maxlength="100" autocomplete="off">
+
+      <label for="att-descrizione">Descrizione</label>
+      <textarea id="att-descrizione" name="descrizione" rows="3" maxlength="500"></textarea>
+
+      <div class="riga">
+        <div>
+          <label for="att-priorita">Priorità</label>
+          <select id="att-priorita" name="priorita">
+            <option value="bassa">Bassa</option>
+            <option value="media" selected>Media</option>
+            <option value="alta">Alta</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="att-stato">Stato</label>
+          <select id="att-stato" name="stato">
+            <option value="da-fare" selected>Da fare</option>
+            <option value="in-corso">In corso</option>
+            <option value="completato">Completato</option>
+          </select>
+        </div>
+      </div>
+
+      <label for="att-assegnatario">Assegnatario</label>
+      <input type="text" id="att-assegnatario" name="assegnatario" maxlength="50" autocomplete="off">
+
+      <p id="errore-titolo" class="errore" role="alert" hidden>Il titolo è obbligatorio.</p>
+
+      <div class="azioni-form">
+        <button type="button" id="btn-annulla" class="btn btn-secondario">Annulla</button>
+        <button type="submit" id="btn-salva" class="btn btn-primario">Salva</button>
+      </div>
+    </form>
+  </dialog>
+
+  <template id="template-attivita">
+    <article class="scheda" data-id="">
+      <h3 class="scheda-titolo"></h3>
+      <p class="scheda-descrizione"></p>
+      <div class="meta">
+        <span class="badge scheda-priorita"></span>
+        <span class="scheda-assegnatario"></span>
+      </div>
+      <div class="azioni">
+        <button type="button" class="btn-icona btn-indietro" title="Sposta indietro" aria-label="Sposta indietro">&larr;</button>
+        <button type="button" class="btn-icona btn-avanti" title="Sposta avanti" aria-label="Sposta avanti">&rarr;</button>
+        <button type="button" class="btn-testo btn-modifica">Modifica</button>
+        <button type="button" class="btn-testo btn-elimina">Elimina</button>
+      </div>
+    </article>
+  </template>
+</body>
+</html>

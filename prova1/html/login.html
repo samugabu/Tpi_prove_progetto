@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Accesso - Kanban</title>
+  <link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/style.css">
+<script src="../js/storage.js" defer></script>
+<script src="../js/dati.js" defer></script>
+<script src="../js/login.js" defer></script>
+</head>
+<body class="pagina-login">
+  <main class="login-box">
+    <h1>Kanban Board</h1>
+    <p class="sottotitolo">Accedi per gestire i tuoi progetti.</p>
+
+    <form id="form-login">
+      <label for="username">Nome utente</label>
+      <input type="text" id="username" required autocomplete="username" autofocus>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" required autocomplete="current-password">
+
+      <p id="errore" class="errore" role="alert" hidden>Nome utente o password non corretti.</p>
+      <button type="submit" class="btn btn-primario">Accedi</button>
+    </form>
+
+    <p class="nota">Account: <strong>admin</strong> / <strong>1234</strong></p>
+  </main>
+</body>
+</html>

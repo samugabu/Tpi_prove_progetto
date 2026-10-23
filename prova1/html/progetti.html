@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>I tuoi progetti - Kanban</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/storage.js" defer></script>
+  <script src="../js/dati.js" defer></script>
+  <script src="../js/progetti.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <h1>Kanban Board</h1>
+    <div class="utente">
+      <span>Ciao, <strong id="utente-corrente"></strong></span>
+      <button type="button" id="btn-logout" class="btn btn-secondario">Esci</button>
+    </div>
+  </header>
+
+  <main class="contenitore">
+    <h2>I tuoi progetti</h2>
+
+    <form id="form-progetto" class="nuovo-progetto">
+      <input type="text" id="titolo-progetto" placeholder="Titolo del nuovo progetto" maxlength="60" required>
+      <button type="submit" class="btn btn-primario">+ Crea progetto</button>
+    </form>
+
+    <p id="vuoto" class="vuoto" hidden>Nessun progetto: creane uno per iniziare.</p>
+    <div id="elenco-progetti" class="elenco-progetti"></div>
+  </main>
+
+  <template id="template-progetto">
+    <article class="progetto">
+      <a class="progetto-link" href="#"><h3 class="progetto-titolo"></h3></a>
+      <div class="barra"><div class="barra-riempita"></div></div>
+      <p class="progetto-info"></p>
+      <div class="azioni">
+        <a class="btn btn-primario progetto-apri" href="#">Apri</a>
+        <button type="button" class="btn-testo btn-elimina">Elimina</button>
+      </div>
+    </article>
+  </template>
+</body>
+</html>
