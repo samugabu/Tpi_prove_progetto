@@ -5,14 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Progetto - Kanban</title>
   <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/team.css">
+  <script src="../js/tema.js"></script>
   <script src="../js/storage.js" defer></script>
   <script src="../js/dati.js" defer></script>
   <script src="../js/board.js" defer></script>
-  <script src="../js/tema.js"></script>
 </head>
 <body>
   <header class="topbar topbar-fissa">
-    <a href="../html/progetti.html" class="btn btn-secondario">&larr; Torna ai Progetti</a>
+    <a href="progetti.html" class="btn btn-secondario">&larr; Torna ai Progetti</a>
     <h1 id="titolo-progetto"></h1>
     <div class="utente">
       <span><strong id="utente-corrente"></strong></span>
@@ -21,6 +22,16 @@
   </header>
 
   <main class="contenitore">
+    <section class="team" aria-label="Team del progetto">
+      <h2>Team</h2>
+      <form id="form-team" class="form-team">
+        <input type="text" id="nome-partecipante" placeholder="Nome o email del partecipante" maxlength="60" autocomplete="off">
+        <button type="submit" class="btn btn-secondario">+ Aggiungi</button>
+      </form>
+      <ul id="elenco-team" class="elenco-team"></ul>
+      <p id="team-vuoto" class="progetto-info">Nessun partecipante: aggiungine uno per poter assegnare le attività.</p>
+    </section>
+
     <section class="avanzamento" aria-label="Avanzamento del progetto">
       <div class="barra"><div class="barra-riempita" id="barra"></div></div>
       <p id="testo-avanzamento" class="progetto-info"></p>
@@ -73,8 +84,11 @@
         </div>
       </div>
 
-      <label for="att-assegnatario">Assegnatario</label>
-      <input type="text" id="att-assegnatario" maxlength="50" autocomplete="off">
+      <p class="etichetta">Assegnata a</p>
+      <details class="tendina">
+        <summary id="riepilogo-assegnatari">Nessuno</summary>
+        <div id="lista-assegnatari" class="lista-assegnatari"></div>
+      </details>
 
       <p id="errore-titolo" class="errore" role="alert" hidden>Il titolo è obbligatorio.</p>
 

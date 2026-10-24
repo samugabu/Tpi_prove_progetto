@@ -7,19 +7,32 @@ const UTENTI = [
   { username: "gabu", password: "1234" },
   { username: "kevin", password: "1234" },
   { username: "topala", password: "1234" },
-  { username: "sora", password: "1234" },
-    { username: "profe", password: "1234" }
+  { username: "sora", password: "1234" }
 ];
 
 const Dati = (function () {
   const generaId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+
+  function normalizza(d) {
+    d.progetti.forEach(function (p) {
+      if (!Array.isArray(p.partecipanti)) p.partecipanti = [];
+      p.attivita.forEach(function (a) {
+        if (!Array.isArray(a.assegnatari)) a.assegnatari = a.assegnatario ? [a.assegnatario] : [];
+        delete a.assegnatario;
+        a.assegnatari.forEach(function (nome) {
+          if (!p.partecipanti.includes(nome)) p.partecipanti.push(nome);
+        });
+      });
+    });
+    return d;
+  }
 
   function carica() {
     const grezzo = Archivio.leggi(CHIAVE_DATI);
     if (grezzo !== null) {
       try {
         const letto = JSON.parse(grezzo);
-        if (letto && Array.isArray(letto.progetti)) return letto;
+        if (letto && Array.isArray(letto.progetti)) return normalizza(letto);
       } catch (e) {}
       return { progetti: [] };
     }
@@ -28,12 +41,12 @@ const Dati = (function () {
     try { attivita = JSON.parse(Archivio.leggi(CHIAVE_VECCHIA)); } catch (e) {}
     if (!Array.isArray(attivita) || attivita.length === 0) {
       attivita = [
-        { id: generaId(), titolo: "Analisi dei requisiti", descrizione: "", priorita: "alta", assegnatario: "Marco", stato: "completato" },
-        { id: generaId(), titolo: "Struttura HTML", descrizione: "Login e board", priorita: "media", assegnatario: "Giulia", stato: "in-corso" },
-        { id: generaId(), titolo: "Drag and drop", descrizione: "", priorita: "alta", assegnatario: "Luca", stato: "da-fare" }
+        { id: generaId(), titolo: "Analisi dei requisiti", descrizione: "", priorita: "alta", assegnatari: ["Marco"], stato: "completato" },
+        { id: generaId(), titolo: "Struttura HTML", descrizione: "Login e board", priorita: "media", assegnatari: ["Giulia"], stato: "in-corso" },
+        { id: generaId(), titolo: "Drag and drop", descrizione: "", priorita: "alta", assegnatari: ["Luca"], stato: "da-fare" }
       ];
     }
-    return { progetti: [{ id: generaId(), titolo: "Progetto Kanban", attivita: attivita }] };
+    return normalizza({ progetti: [{ id: generaId(), titolo: "Progetto Kanban", attivita: attivita }] });
   }
 
   let dati = carica();
@@ -71,7 +84,7 @@ const Dati = (function () {
     progetto: progetto,
 
     creaProgetto(titolo) {
-      dati.progetti.push({ id: generaId(), titolo: titolo, attivita: [] });
+      dati.progetti.push({ id: generaId(), titolo: titolo, partecipanti: [], attivita: [] });
       salva();
     },
 
@@ -85,6 +98,22 @@ const Dati = (function () {
       const completate = p.attivita.filter(a => a.stato === "completato").length;
       const percentuale = totale === 0 ? 0 : Math.round((completate / totale) * 100);
       return { totale, completate, percentuale };
+    },
+
+    aggiungiPartecipante(idProgetto, nome) {
+      const p = progetto(idProgetto);
+      nome = nome.trim();
+      if (nome === "" || p.partecipanti.some(x => x.toLowerCase() === nome.toLowerCase())) return false;
+      p.partecipanti.push(nome);
+      salva();
+      return true;
+    },
+
+    rimuoviPartecipante(idProgetto, nome) {
+      const p = progetto(idProgetto);
+      p.partecipanti = p.partecipanti.filter(x => x !== nome);
+      p.attivita.forEach(a => { a.assegnatari = a.assegnatari.filter(x => x !== nome); });
+      salva();
     },
 
     salvaAttivita(idProgetto, campi) {

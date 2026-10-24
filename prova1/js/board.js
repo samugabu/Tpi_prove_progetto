@@ -1,5 +1,3 @@
-/* board.js - area di lavoro di un progetto (id passato nell'URL: board.html?id=...) */
-
 if (Dati.richiediLogin()) {
   const id = new URLSearchParams(window.location.search).get("id");
   if (Dati.progetto(id)) avvia(id);
@@ -17,22 +15,64 @@ function avvia(idProgetto) {
     titolo: document.getElementById("att-titolo"),
     descrizione: document.getElementById("att-descrizione"),
     priorita: document.getElementById("att-priorita"),
-    stato: document.getElementById("att-stato"),
-    assegnatario: document.getElementById("att-assegnatario")
+    stato: document.getElementById("att-stato")
   };
   const erroreTitolo = document.getElementById("errore-titolo");
+  const tendina = document.querySelector(".tendina");
+  const listaAssegnatari = document.getElementById("lista-assegnatari");
+  const riepilogo = document.getElementById("riepilogo-assegnatari");
 
   const progetto = () => Dati.progetto(idProgetto);
 
-  document.getElementById("utente-corrente").textContent = Dati.utente();
+  const nomeUtente = document.getElementById("utente-corrente");
+  if (nomeUtente) nomeUtente.textContent = Dati.utente();
   document.getElementById("titolo-progetto").textContent = progetto().titolo;
   document.getElementById("btn-logout").addEventListener("click", Dati.esci);
 
-  /* ---------- Rendering ---------- */
+  function renderTeam() {
+    const nomi = progetto().partecipanti;
+    document.getElementById("team-vuoto").hidden = nomi.length > 0;
 
-  /* Ridisegna colonne, contatori e barra di avanzamento.
-     Viene richiamata dopo ogni modifica, quindi la percentuale
-     si aggiorna subito, anche durante il drag and drop. */
+    document.getElementById("elenco-team").replaceChildren(...nomi.map(function (nome) {
+      const li = document.createElement("li");
+      li.className = "membro";
+
+      const testo = document.createElement("span");
+      testo.textContent = nome;
+
+      const rimuovi = document.createElement("button");
+      rimuovi.type = "button";
+      rimuovi.className = "membro-rimuovi";
+      rimuovi.textContent = "×";
+      rimuovi.dataset.nome = nome;
+      rimuovi.setAttribute("aria-label", "Rimuovi " + nome);
+
+      li.append(testo, rimuovi);
+      return li;
+    }));
+  }
+
+  document.getElementById("form-team").addEventListener("submit", function (e) {
+    e.preventDefault();
+    const campo = document.getElementById("nome-partecipante");
+    if (Dati.aggiungiPartecipante(idProgetto, campo.value)) {
+      campo.value = "";
+      renderTeam();
+    }
+    campo.focus();
+  });
+
+  document.getElementById("elenco-team").addEventListener("click", function (e) {
+    const pulsante = e.target.closest(".membro-rimuovi");
+    if (!pulsante) return;
+    const nome = pulsante.dataset.nome;
+    if (confirm("Rimuovere " + nome + "? Verrà tolto anche dalle attività a cui è assegnato.")) {
+      Dati.rimuoviPartecipante(idProgetto, nome);
+      renderTeam();
+      render();
+    }
+  });
+
   function render() {
     STATI.forEach(function (stato) {
       const lista = progetto().attivita.filter(a => a.stato === stato);
@@ -59,16 +99,13 @@ function avvia(idProgetto) {
     descrizione.hidden = !a.descrizione;
 
     scheda.querySelector(".scheda-priorita").textContent = ETICHETTE[a.priorita];
-    scheda.querySelector(".scheda-assegnatario").textContent = a.assegnatario ? "👤 " + a.assegnatario : "Non assegnata";
+    scheda.querySelector(".scheda-assegnatario").textContent =
+      a.assegnatari.length ? "👤 " + a.assegnatari.join(", ") : "Non assegnata";
     scheda.querySelector(".btn-indietro").disabled = posizione === 0;
     scheda.querySelector(".btn-avanti").disabled = posizione === STATI.length - 1;
     return scheda;
   }
 
-  /* ---------- Drag and drop (API HTML5 nativa) ---------- */
-
-  /* Restituisce l'id della scheda davanti alla quale inserire quella
-     trascinata, in base alla posizione verticale del mouse (null = in fondo). */
   function schedaSuccessiva(colonna, y) {
     const schede = colonna.querySelectorAll(".scheda:not(.in-trascinamento)");
     for (const s of schede) {
@@ -119,8 +156,6 @@ function avvia(idProgetto) {
     render();
   });
 
-  /* ---------- Pulsanti delle schede (alternativa al drag, utile su touch) ---------- */
-
   board.addEventListener("click", function (e) {
     const pulsante = e.target.closest("button");
     const scheda = pulsante && pulsante.closest(".scheda");
@@ -144,11 +179,43 @@ function avvia(idProgetto) {
     }
   });
 
-  /* ---------- Dialog di creazione/modifica ---------- */
+  function assegnatariSelezionati() {
+    return [...listaAssegnatari.querySelectorAll("input:checked")].map(i => i.value);
+  }
+
+  function aggiornaRiepilogo() {
+    const scelti = assegnatariSelezionati();
+    riepilogo.textContent = scelti.length ? scelti.join(", ") : "Nessuno";
+  }
+
+  function riempiTendina(selezionati) {
+    const nomi = progetto().partecipanti;
+
+    listaAssegnatari.replaceChildren(...nomi.map(function (nome) {
+      const etichetta = document.createElement("label");
+      etichetta.className = "opzione-assegnatario";
+
+      const casella = document.createElement("input");
+      casella.type = "checkbox";
+      casella.value = nome;
+      casella.checked = selezionati.includes(nome);
+
+      etichetta.append(casella, document.createTextNode(nome));
+      return etichetta;
+    }));
+
+    if (nomi.length === 0) {
+      listaAssegnatari.textContent = "Aggiungi prima i partecipanti nella sezione Team.";
+    }
+    aggiornaRiepilogo();
+  }
+
+  listaAssegnatari.addEventListener("change", aggiornaRiepilogo);
 
   function apriDialog(a) {
     form.reset();
     erroreTitolo.hidden = true;
+    tendina.open = false;
     document.getElementById("dialog-titolo").textContent = a ? "Modifica attività" : "Nuova attività";
     campi.id.value = a ? a.id : "";
     if (a) {
@@ -156,8 +223,8 @@ function avvia(idProgetto) {
       campi.descrizione.value = a.descrizione;
       campi.priorita.value = a.priorita;
       campi.stato.value = a.stato;
-      campi.assegnatario.value = a.assegnatario;
     }
+    riempiTendina(a ? a.assegnatari : []);
     dialog.showModal();
     campi.titolo.focus();
   }
@@ -180,12 +247,13 @@ function avvia(idProgetto) {
       titolo: titolo,
       descrizione: campi.descrizione.value.trim(),
       priorita: campi.priorita.value,
-      assegnatario: campi.assegnatario.value.trim(),
+      assegnatari: assegnatariSelezionati(),
       stato: campi.stato.value
     });
     dialog.close();
     render();
   });
 
+  renderTeam();
   render();
 }
